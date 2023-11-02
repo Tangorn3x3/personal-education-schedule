@@ -1,0 +1,38 @@
+{
+  "className": "projects",
+  "tableName": "projects",
+  "seqName": "projects",
+  "desc": null,
+  "generateModel": true,
+  "generateToModelMethod": true,
+  "isMappedSuperclass": false,
+  "fields": [
+    {
+      "name": "id",
+      "dbName": "id",
+      "description": null,
+      "transient": false,
+      "type": "",
+      "dbType": "",
+      "dbLength": "",
+      "dbColumnDefinition": "",
+
+      "isNullable": false,
+      "isUnique": false,
+      "isIndex": false,
+      "isEnum": false,
+      "enumType": false,
+      "showInModel": true,
+
+      "isRelation": false,
+      "relationType": "",
+      "cascadeType": "",
+      "relMappedBy": "",
+      "relFetchType": "EAGER",
+      "relJoinColumn": "",
+      "relJunctionTable": "",
+      "relFunctionField": "",
+      "relJunctionFieldRelation": ""
+    }
+  ]
+}
