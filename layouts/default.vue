@@ -1,21 +1,10 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      clipped
-      fixed
-      app
-    >
+    <v-navigation-drawer v-model="drawer" clipped app>
       <v-list>
-        <v-list-item
-            v-if="can(item.permission)"
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
+        <v-list-item v-if="can(item.permission)"
+                     v-for="(item, i) in items" :key="i" :to="item.to" router exact>
+
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -25,71 +14,42 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar
-      :clipped-left="clipped"
-      fixed
-      app
-      dense
-    >
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
+
+
+    <v-app-bar fixed clipped-left app>
+      <v-btn icon @click.stop="drawer = !drawer"><v-icon>menu</v-icon></v-btn>
       <v-toolbar-title v-text="title"/>
 
       <v-spacer/>
-      <v-btn v-if="can('clear_all_cache')"
-          color="default" icon class="mr-2" @click.stop="clearRootCache"><v-icon>cached</v-icon></v-btn>
-      <converter-dialog v-if="can('converters_main')"/>
-      <nur-subscriber-info v-if="can('slr_info')"/>
-      <ofd-decryptor-dialog v-if="can('ofd_encryptor')"/>
-      <v-btn @click="$auth.logout()" icon><v-icon>exit_to_app</v-icon></v-btn>
 
+      <v-btn v-if="can('viewer')"
+          color="default" icon class="mr-2" @click.stop="clearRootCache"><v-icon>cached</v-icon></v-btn>
+
+      <v-btn @click="$auth.logout()" icon><v-icon>exit_to_app</v-icon></v-btn>
     </v-app-bar>
+
+
     <v-content>
       <v-container>
         <nuxt/>
       </v-container>
     </v-content>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
 
-
-    <reminder-popup/>
-    <global-loader/>
+<!--    <global-loader/>-->
   </v-app>
 </template>
 
 <script>
   import { mapActions } from 'vuex'
   import GlobalLoader from "@/components/common/GlobalLoader";
-  import NurSubscriberInfo from "@/components/nur/NurSubscriberInfo";
-  import ConverterDialog from "@/components/converter/ConverterDialog";
-  import * as dreamApi from "@/utils/api/dreamApi";
-  import OfdDecryptorDialog from "@/components/encrypt/OfdDecryptorDialog";
-  import ReminderPopup from "@/components/reminder/ReminderPopup";
-  import NurReviewGenerator from "@/components/nur/NurReviewGenerator";
+  import appConfig, {PlatformCrudTables} from "@/appConfig";
+  import {clearCaches} from "@/@app-platform/services/platformCrudService";
   export default {
-    components: {NurReviewGenerator, ReminderPopup, OfdDecryptorDialog, ConverterDialog, NurSubscriberInfo, GlobalLoader},
+    components: {GlobalLoader},
     data() {
       return {
-        clipped: true,
-        drawer: true,
-        fixed: true,
+        drawer: false,
+
         items: [
           {icon: 'sticky_note_2', title: 'Snippets', to: '/snippets', permission: 'snip_items'},
           {icon: 'add_task', title: 'Kanban', to: '/kanban', permission: 'bug_report'},
@@ -103,7 +63,7 @@
         miniVariant: true,
         right: true,
         rightDrawer: false,
-        title: 'Snippeter'
+        title: appConfig.appName
       }
     },
     computed: {
@@ -122,7 +82,7 @@
     methods: {
       ...mapActions('permissionsStore', { fetchAllPermissions: 'fetchAllPermissions' }),
       clearRootCache() {
-        dreamApi.clearRootCaches()
+        clearCaches(PlatformCrudTables)
       },
       initializePermissions() {
         this.fetchAllPermissions()

@@ -2,6 +2,8 @@
 import GoogleSignInButton from "@/@app-platform/auth/google-identity-signin-directive";
 import nuxtConfig from "@/nuxt.config";
 import {mapActions, mapState} from "vuex";
+import {list} from "@/@app-platform/services/platformCrudService";
+import appConfig, {PlatformCrudTables} from "@/appConfig";
 
 export default {
   directives: {
@@ -12,7 +14,7 @@ export default {
     return {
       googleClientId: nuxtConfig.auth.google.clientId,
 
-      appName: nuxtConfig.manifest.name,
+      appName: appConfig.appName,
       error: ''
     }
   },
@@ -39,6 +41,7 @@ export default {
 
     initRequiredData() {
       this.reloadInfo()
+      list(PlatformCrudTables.courses, {name: 'Java'})
     }
 
   }
@@ -59,7 +62,7 @@ export default {
             <v-progress-circular v-if="busy" indeterminate color="primary"/>
             <div v-else style="display: flex; justify-content: center"
                  id="google-login-btn"
-                 v-google-identity-login-btn="{ clientId: googleClientId }">
+                 v-google-identity-login-btn="{ clientId: googleClientId, theme: 'dark' }">
               Продолжить с Google
             </div>
 

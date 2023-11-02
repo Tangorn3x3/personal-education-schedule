@@ -13,6 +13,7 @@ export const serverApiParameters = {
     action: 'action',
     table: 'table',
     token: 'token',
+    id: 'id',
     search: '_search',
 }
 
@@ -35,6 +36,10 @@ export async function fetchAction(action, options = {}) {
     if (options.search) targetQuery[serverApiParameters.search] = JSON.stringify(options.search)
 
     if (options.table) targetQuery[serverApiParameters.table] = options.table
+
+    if (options.body) targetQuery = {...targetQuery, ...options.body}
+
+    if (options.id) targetQuery[serverApiParameters.id] = options.id
     //endregion
 
     let targetUrl = platformUrl + '?' + new URLSearchParams(targetQuery).toString();

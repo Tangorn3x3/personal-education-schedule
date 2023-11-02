@@ -6,10 +6,10 @@ export async function fetchPlatformInfo() {
     if (!token) return null;
 
     try {
-        return await fetchAction(serverActions.auth_user_info)
+        return await fetchAction(serverActions.app_info)
     } catch (error) {
-        console.error('Error while fetching user info', error)
-        notificationService.showError(error.toString(), 'Получение информации о пользователе')
+        console.error('Error while fetching app info', error)
+        notificationService.showError(error.toString(), 'Получение информации о приложении')
         throw error
     }
 }

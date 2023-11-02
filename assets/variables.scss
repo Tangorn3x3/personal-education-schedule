@@ -1,25 +1,48 @@
 $font-size-root: 16px;
 
+// More attrs in https://v2.vuetifyjs.com/en/features/sass-variables/#variable-api
+.inspire .v-content {backdrop-filter: hue-rotate(155deg);}
+$colors-dark-background: #28243D;
+$material-dark-elevation-colors: (
+        '0': $colors-dark-background,
+        '1': lighten($colors-dark-background, 2.5%),
+        '2': lighten($colors-dark-background, 5%),
+        '3': lighten($colors-dark-background, 7.5%),
+        '4': lighten($colors-dark-background, 10%),
+        '6': lighten($colors-dark-background, 12.5%),
+        '8': lighten($colors-dark-background, 15%),
+        '12': lighten($colors-dark-background, 17.5%),
+        '16': lighten($colors-dark-background, 20%),
+        '24': lighten($colors-dark-background, 22.5%)
+);
+$material-dark: (
+        //'background': $colors-dark-background,
+        'background': $colors-dark-background,
+        //'surface': $colors-dark-surface,
+);
+
 .v-expansion-panels.dense {
-  .v-expansion-panel-header {padding: 8px 12px;}
-  .v-expansion-panel-content__wrap {padding: 0 0 4px}
+  .v-expansion-panel-header {
+    padding: 8px 12px;
+  }
+
+  .v-expansion-panel-content__wrap {
+    padding: 0 0 4px
+  }
 }
 
-body::-webkit-scrollbar-track
-{
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+body::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #444444;
 }
 
-body::-webkit-scrollbar
-{
+body::-webkit-scrollbar {
   width: 6px;
   background-color: #444444;
 }
 
-body::-webkit-scrollbar-thumb
-{
+body::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
   background-color: #121212;
 }

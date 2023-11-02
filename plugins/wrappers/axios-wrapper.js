@@ -1,4 +1,3 @@
-import { setClient } from '@/utils/api/apiClient'
 import nuxtConfig from '@/nuxt.config'
 import _ from 'lodash'
 import * as platformAuthService from "@/@app-platform/auth/platformAuthService";
@@ -7,13 +6,11 @@ const STRATEGY = 'local'
 
 export default ({ app, store }) => {
   app.$axios.setBaseURL(nuxtConfig.axios.baseUrl)
-  setClient(app.$axios)
 
   /**
    * Реагирование на ошибки в ответах сервера.
    */
   app.$axios.onError((error) => {
-    debugger
     if (checkStatus(401, error) || checkStatusAndErrorCode(400, 'invalid_grant', error) ) {
       //app.$auth.logout()
     }
@@ -32,7 +29,6 @@ export default ({ app, store }) => {
       return response;
     },
     async function (error) {
-      debugger
 
       /** !!! PLATFORM SPECIFIC CODE !!! */
       if (platformAuthService.isInterceptionUserInfoUrl(error.config.url)) {

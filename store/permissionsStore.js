@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import {commonMutations} from "@/utils/storeUtils";
+import {commonMutations} from "@/@app-platform/utils/storeUtils";
 
 function _initialState () {
   return {
@@ -30,7 +30,7 @@ export const getters = {
 
 export const actions = {
   fetchAllPermissions({commit, rootState}) {
-    commit('setUnified', { customPermissions: _.cloneDeep(_.get(rootState, 'auth.user.authorities'))})
+    commit('setUnified', { customPermissions: _.cloneDeep(_.get(rootState, 'auth.user.roles'))})
   }
 }
 

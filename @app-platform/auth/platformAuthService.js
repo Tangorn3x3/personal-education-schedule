@@ -26,7 +26,6 @@ export async function fetchCurrentUserInfo() {
 }
 
 export function isInterceptionUserInfoUrl(currentUrl) {
-    debugger
     return currentUrl === nuxtConfig.auth.strategies.local.endpoints.user.url
 }
 
