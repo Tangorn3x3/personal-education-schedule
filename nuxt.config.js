@@ -12,7 +12,7 @@ const DEV_ADDR = 'http://snippeter-host:9797/api'
 
 
 export default {
-  appScriptUrl: SRV_ADDR,
+  platformApiUrl: SRV_ADDR,
 
   mode: 'spa',
 
@@ -62,7 +62,7 @@ export default {
   ],
   router: {
     base: process.env.NODE_ENV === 'production' ? SRV_PATH : '/',
-    middleware: ['auth']
+    middleware: []
   },
 
   plugins: [
@@ -73,12 +73,14 @@ export default {
     '~/plugins/libs/vue-moment',
     '~/plugins/libs/vue-hotkey',
     '~/plugins/libs/logrocket',
-    '~/plugins/libs/google-auth',
     '~/plugins/mixins',
 
     '~/plugins/wrappers/axios-wrapper',
     '~/plugins/wrappers/notification-wrapper',
     '~/plugins/wrappers/property-wrapper',
+
+    '~/@app-platform/plugins/platform-api-wrapper',
+    '~/@app-platform/plugins/platform-stores-wrapper',
   ],
   /*
   ** Nuxt.js dev-modules
@@ -104,14 +106,14 @@ export default {
     google: {
       clientId: '216836867315-81680karuuapm62pvmfgoe3qqifdjkmc.apps.googleusercontent.com'
     },
-    auth_api_key: '2113a21d5d4439957d8cacc447c26f6d4172ae12bf242f1105e2d2a20533609b',
-    defaultData: {grant_type: 'password', scope: 'read'},
     localStorage: false,
     strategies: {
       local: {
+        user: {
+          autoFetch: false
+        },
         endpoints: {
           login: { url: SRV_ADDR+'/authenticate', method: 'post', propertyName: 'id_token' },
-          // logout: { url: '/api/ui/auth/signout', method: 'post' },
           user: { url: SRV_ADDR +'/auth_user_info', method: 'get', propertyName: false }
         },
         tokenRequired: true,
