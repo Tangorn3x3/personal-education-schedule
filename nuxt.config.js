@@ -63,7 +63,7 @@ export default {
     '~/plugins/validation-mixin',
     '~/plugins/libs/vue-moment',
     '~/plugins/libs/vue-hotkey',
-    '~/plugins/mixins',
+    '~/@app-platform/plugins/mixins',
 
     '~/plugins/wrappers/axios-wrapper',
     '~/plugins/wrappers/notification-wrapper',

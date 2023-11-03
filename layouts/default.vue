@@ -80,7 +80,7 @@
       }
     },
     methods: {
-      ...mapActions('permissionsStore', { fetchAllPermissions: 'fetchAllPermissions' }),
+      ...mapActions('permissions', { fetchAllPermissions: 'fetchAllPermissions' }),
       clearRootCache() {
         clearCaches(PlatformCrudTables)
       },

@@ -6,7 +6,7 @@
       </v-col>
       <v-col cols="12" md="8">
 
-        <VCard class="position-relative">
+        <VCard class="position-relative" elevation="24">
           <v-card-title>Congratulations John! 🎉</v-card-title>
           <v-card-subtitle>Best seller of the month</v-card-subtitle>
 

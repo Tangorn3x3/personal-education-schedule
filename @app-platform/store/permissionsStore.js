@@ -8,8 +8,6 @@ function _initialState () {
   }
 }
 
-export const state = () => (_initialState())
-
 export const getters = {
   allPermissions (state, getters) {
     return _.union(state.resources, state.customPermissions)
@@ -17,7 +15,6 @@ export const getters = {
 
   can: (state, getters, rootState) => (permission) => {
     if (_.isString(permission)) {
-      //console.debug(`Checking permission ${permission}...`, getters.permissions.includes(permission))
       return getters.allPermissions.includes(permission)
     }
     if (_.isArray(permission)) {
@@ -34,5 +31,8 @@ export const actions = {
   }
 }
 
-
 export const mutations = { ...commonMutations, ...{}}
+
+export default {
+  state: _initialState (), getters, actions, mutations, namespaced: true
+}

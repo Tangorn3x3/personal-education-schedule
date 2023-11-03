@@ -7,7 +7,7 @@ Vue.mixin({
     },
     methods: {
         can (permission) {
-            return this.$store.getters['permissionsStore/can'](permission)
+            return this.$store.getters['permissions/can'](permission)
         },
     }
 })
