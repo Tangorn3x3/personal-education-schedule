@@ -29,6 +29,15 @@ export const commonMutations = {
     })
   },
 
+  /**
+   * Обновляет объект в массиве по id
+   *
+   * Например, если у нас есть элемент в сторе items: [{id: 1, name: 'test'}, {id: 2, name: 'test2'}],
+   * то вызов этого метода с параметром {items: {id: 2, name: 'test2-new'}} обновит элемент с id 2
+   *
+   * @param state
+   * @param payload
+   */
   updateInArrayById(state, payload) {
     _.forIn(payload, (value, key) => {
       const stateObj = _.get(state, key)

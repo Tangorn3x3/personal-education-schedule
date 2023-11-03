@@ -1,7 +1,7 @@
 import _ from "lodash";
 import notificationService from "@/utils/service/notificationService";
 import {fetchAction} from "@/@app-platform/services/platformApiClient";
-import {PlatformCrudTables} from "@/appConfig";
+import appConfig, {PlatformCrudTables} from "@/appConfig";
 
 const USE_CACHE = process.env.NODE_ENV === 'production'
 
@@ -20,9 +20,9 @@ const ACTIONS = {
 export async function list(apiType, filter = {}) {
     try {
         console.debug(`Загрузка списка ${apiType.name} из таблицы ${apiType.table}...`)
+        let cacheKey = `${apiType.code}`
 
         if (apiType.cacheable) {
-            let cacheKey = `${apiType.code}`
             let cached = _getCache(cacheKey)
             if (cached) {
                 console.log('Getted from cache', cacheKey)
@@ -36,6 +36,8 @@ export async function list(apiType, filter = {}) {
         })
 
         console.debug(`Загрузка списка ${apiType.name} из таблицы ${apiType.table} завершена`, list)
+        _putCache(cacheKey, list, apiType)
+
         return list;
     } catch (error) {
         console.log()
@@ -193,7 +195,8 @@ function _putCacheAndClearRelated(apiType, id, key, data) {
 }
 
 function _getCache(key) {
-    if (!USE_CACHE) return undefined
+    let useCache = USE_CACHE || appConfig.platformCrud.cacheEnabled
+    if (!useCache) return undefined
 
     let data = localStorage.getItem(key)
     try {

@@ -1,5 +1,13 @@
 import * as _ from 'lodash'
 
+export function stringHashToArrayIndex(str, arrayLength) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash) % arrayLength;
+}
+
 export function searchInStrings(searchStr, strings = []) {
   searchStr = _.toLower(searchStr)
   for (let i = 0; i < strings.length; i++) {

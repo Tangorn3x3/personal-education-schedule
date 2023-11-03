@@ -1,30 +1,25 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" md="4">
 
+      <v-col cols="12" md="4" class="mb-4">
+        <h2 class="font-weight-light mb-2">Прямо сейчас</h2>
+        <scheduled-item-card v-if="currentItem" :item="currentItem" :statistics="statistics" allow-actions/>
+        <card-loading-skeleton v-if="loadingItems" class="elevation-24"/>
       </v-col>
-      <v-col cols="12" md="8">
 
-        <VCard class="position-relative" elevation="24">
-          <v-card-title>Congratulations John! 🎉</v-card-title>
-          <v-card-subtitle>Best seller of the month</v-card-subtitle>
-
-          <VCardText>
-            <h5 class="text-2xl font-weight-medium text-primary">
-              $42.8k
-            </h5>
-            <p>78% of target 🚀</p>
-            <VBtn size="small">View Sales</VBtn>
-          </VCardText>
-
-          <!-- Triangle Background -->
-          <VImg :src="triangleBg" class="triangle-bg flip-in-rtl"/>
-          <!-- Trophy -->
-          <VImg :src="trophy" class="trophy"/>
-        </VCard>
-
+      <v-col cols="12" md="4" class="mb-4">
+        <h2 class="font-weight-light mb-2">Сегодня</h2>
+        <scheduled-item-card v-for="item in todayToWork" :key="item.id" :item="item" :title="item.course" :elevation="8" dense class="mb-6"/>
+        <card-loading-skeleton v-if="loadingItems" class="elevation-24"/>
       </v-col>
+
+      <v-col cols="12" md="4" class="mb-4">
+        <h2 class="font-weight-light mb-2">Завтра</h2>
+        <scheduled-item-card v-for="item in tomorrowItems" :key="item.id" :item="item" :title="item.course" :elevation="12" dense  class="mb-6"/>
+        <card-loading-skeleton v-if="loadingItems" class="elevation-24"/>
+      </v-col>
+
     </v-row>
   </v-container>
 </template>
@@ -32,20 +27,63 @@
 <script>
 import triangleDark from '@/assets/images/triangle-dark.png'
 import trophy from '@/assets/images/trophy.png'
-  export default {
-    data() {
-      return {
-        triangleBg: triangleDark,
-        trophy: trophy
-      }
-    },
-    mounted() {
+import {mapActions, mapGetters, mapState} from "vuex";
+import {ScheduledItemStatus} from "@/models/ScheduledItem";
+import CardLoadingSkeleton from "@/components/common/loaders/CardLoadingSkeleton.vue";
+import ScheduledItemCard from "@/components/scheduled-items/ScheduledItemCard.vue";
+import _ from "lodash";
 
-    },
-    methods: {
+export default {
+  components: {ScheduledItemCard, CardLoadingSkeleton},
+  data() {
+    return {
+      triangleBg: triangleDark,
+      trophy: trophy,
 
+      loadingItems: false
+    }
+  },
+  computed: {
+    ...mapState('courses', { courses: 'items', coursesGroups: 'groups'}),
+    ...mapState('schedule', { statistics: 'statistics' }),
+    ...mapGetters('schedule', {
+      allItems: 'allItems', todayItems: 'today', tomorrowItems: 'tomorrow', yesterdayItems: 'yesterday',
+      currentItem: 'currentItem'
+    }),
+
+    todayToWork() {
+      let currentId = this.currentItem ? this.currentItem.id : null
+      return _.filter(this.todayItems, item => item.status === ScheduledItemStatus.NEW && (!currentId || item.id !== currentId))
+    },
+  },
+  mounted() {
+    this.initializeData()
+  },
+  methods: {
+    ...mapActions('schedule', {
+      fetchCurrentWeekItems: 'fetchCurrentWeekItems',
+      fetchNextWeekItems: 'fetchNextWeekItems',
+      fetchViewItems: 'fetchViewItems',
+      fetchStatistics: 'fetchStatistics',
+    }),
+    ...mapActions('courses', {fetchCourses: 'fetchItems', fetchCourseGroups: 'fetchGroups'}),
+
+    async initializeData() {
+      this.loadingItems = true
+
+      this.fetchCourses()
+      this.fetchCourseGroups()
+
+      await this.initializeItems()
+      this.loadingItems = false
+    },
+
+    async initializeItems() {
+      await this.fetchViewItems()
+      this.fetchStatistics()
     }
   }
+}
 </script>
 
 <style lang="scss">
