@@ -4,10 +4,20 @@ import {PlatformCrudTables} from "@/appConfig";
 import notificationService from "@/utils/service/notificationService";
 import ScheduledItem from "@/models/ScheduledItem";
 import _ from "lodash";
+import moment from "moment";
 
 export async function fetchViewItemsForCoupleWeeks() {
     let weeks = [getStartOfWeekFormatted(), getStartOfNextWeekFormatted(), _.toNumber(getStartOfWeekFormatted()), _.toNumber(getStartOfNextWeekFormatted())]
-    return await crudService.list(PlatformCrudTables.schedulesView, { week: weeks })
+    let items = await crudService.list(PlatformCrudTables.schedulesView, { week: weeks })
+
+    // зачищаем служебные данные от Sheets
+    items.forEach(item => {
+        _.forIn(item, (value, key) => {
+            if (!!value && value === '#N/A') item[key] = null
+        })
+    })
+
+    return items
 }
 
 export async function fetchCurrentWeekItems() {
@@ -25,8 +35,8 @@ export async function fetchScheduleStatistics() {
 }
 
 /**
- * @param {ScheduledItem} currentItem
- * @param {string} newStatus
+ * @param {ScheduledItemBase} currentItem
+ * @param {String} newStatus
  * @returns {Promise<Object>}
  */
 export async function updateStatus(currentItem, newStatus) {
@@ -37,6 +47,7 @@ export async function updateStatus(currentItem, newStatus) {
     }
 
     currentItem.status = newStatus
+    currentItem.updatedAt = moment().format('YYYY-MM-DD HH:mm:ss')
 
     let savedItem = await crudService.update(PlatformCrudTables.schedules, id, currentItem)
     if (!savedItem || savedItem.status !== newStatus) {

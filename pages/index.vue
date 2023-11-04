@@ -5,9 +5,11 @@
       <v-col cols="12" md="4" class="mb-4">
         <h2 class="font-weight-light mb-2">Прямо сейчас</h2>
         <scheduled-item-card v-if="currentItem"
-                             :item="currentItem" :statistics="statistics" :completing-in-progress="competingInProgress"
+                             :item="currentItem" :statistics="statistics" :description="currentItem.health_description"
+                             :completing-in-progress="competingInProgress" :skipping-in-progress="skippingInProgress"
                              @complete="onMoveToComplete"
-                             allow-actions/>
+                             @skip="onMoveToSkip"
+                             allow-actions skippable/>
         <card-loading-skeleton v-if="loadingItems" class="elevation-24"/>
       </v-col>
 
@@ -45,6 +47,7 @@ export default {
 
       loadingItems: false,
       competingInProgress: false,
+      skippingInProgress: false,
     }
   },
   computed: {
@@ -69,7 +72,7 @@ export default {
       fetchNextWeekItems: 'fetchNextWeekItems',
       fetchViewItems: 'fetchViewItems',
       fetchStatistics: 'fetchStatistics',
-      moveToComplete: 'moveViewItemToComplete',
+      moveViewItemToStatus: 'moveViewItemToStatus',
     }),
     ...mapActions('courses', {fetchCourses: 'fetchItems', fetchCourseGroups: 'fetchGroups'}),
 
@@ -91,9 +94,17 @@ export default {
     async onMoveToComplete(viewItem) {
       this.competingInProgress = true
 
-      await this.moveToComplete(viewItem)
+      await this.moveViewItemToStatus({ item: viewItem, status: ScheduledItemStatus.DONE })
 
       this.competingInProgress = false
+    },
+
+    async onMoveToSkip(viewItem) {
+      this.skippingInProgress = true
+
+      await this.moveViewItemToStatus({ item: viewItem, status: ScheduledItemStatus.SKIP })
+
+      this.skippingInProgress = false
     }
   }
 }

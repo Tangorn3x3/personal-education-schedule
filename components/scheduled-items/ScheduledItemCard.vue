@@ -14,10 +14,14 @@ export default {
 
     dense: { type: Boolean, default: false },
     allowActions: { type: Boolean, default: false },
+    skippable: { type: Boolean, default: false },
+
     title: { type: String, default: 'Поехали! 🚀' },
+    description: { type: String, default: '' },
     elevation: { type: Number, default: 24 },
 
     completingInProgress: { type: Boolean, default: false },
+    skippingInProgress: { type: Boolean, default: false },
   },
   data: () => ({
     chipColors: ['red', 'blue', 'green', 'yellow', 'purple']
@@ -53,7 +57,9 @@ export default {
     },
 
     durationText() {
-      const duration = this.item.lesson_duration
+      let duration = this.item.lesson_duration
+      if (_.isString(duration)) duration = _.toNumber(duration)
+
       const integerPart = Math.floor(duration)
       const decimalPart = duration % 1
 
@@ -81,6 +87,18 @@ export default {
     moveToComplete() {
       this.$emit('complete', this.item)
     },
+    async moveToSkip() {
+      const res = await this.$dialog.confirm({
+        text: 'Пропустить занятие?',
+        actions: {
+          'true': 'Пропустить',
+          'false': 'Отмена',
+        }
+      })
+      if (!res) return
+
+      this.$emit('skip', this.item)
+    },
   }
 }
 </script>
@@ -100,7 +118,13 @@ export default {
 
     <VCardText class="pa-0" style="margin-top: -18px;">
       <v-card :elevation="elevation/4*4">
-        <v-card-title class="font-weight-light pb-0">{{title}}</v-card-title>
+        <v-card-title class="font-weight-light pb-0">
+          <span>{{title}}</span>
+
+          <VBtn v-if="skippable" :loading="skippingInProgress" @click="moveToSkip" icon color="pink" size="normal" style="position: absolute; right: 0;">
+              <v-icon>mdi-skip-next</v-icon>
+          </VBtn>
+        </v-card-title>
 
         <VCardText :class="{ 'pb-2' : !dense }">
           <v-list-item v-if="!dense" three-line class="pa-0">
@@ -108,6 +132,9 @@ export default {
             <v-list-item-content :class="{ 'pb-0' : !dense }">
               <h4 class="font-weight-light mb-2">ПРОДОЛЖИТЕЛЬНОСТЬ</h4>
               <h3 class="pl-2 mb-4">{{durationText}}</h3>
+
+              <h4 v-if="description" class="font-weight-light mb-2">ДЕТАЛИ</h4>
+              <h3 v-if="description" class="pl-2 mb-4">{{description}}</h3>
 
               <h4 class="font-weight-light">ПРИОРИТЕТ</h4>
               <v-rating disabled hover length="5" size="15" :value="course.priority / 2" class="scheduled-rating"></v-rating>

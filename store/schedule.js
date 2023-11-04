@@ -2,7 +2,7 @@ import {commonMutations} from "@/@app-platform/utils/storeUtils";
 import * as _ from "lodash";
 import * as scheduledItemsService from "@/utils/service/scheduledItemsService";
 import moment from "moment";
-import {populateBaseFields, ScheduledItemStatus} from "@/models/ScheduledItem";
+import {populateBaseFields, ScheduledItemBase, ScheduledItemStatus} from "@/models/ScheduledItem";
 import * as ScheduledItem from "@/models/ScheduledItem";
 import {filterArrayByDateField} from "@/utils/utils/dateUtils";
 
@@ -65,15 +65,16 @@ export const actions = {
      * @param {ScheduledItem} item
      * @returns {Promise<void>}
      */
-    async moveViewItemToComplete({commit, rootState}, item) {
+    async moveViewItemToStatus({commit, rootState}, {item, status}) {
         let initialDate = item.date
+
         let savingDate = moment(initialDate).format('YYYY-MM-DD')
 
         let itemToUpdate = _.cloneDeep(item)
         itemToUpdate.date = savingDate
 
         /** @type {ScheduledItem} */
-        let savedItem = await scheduledItemsService.updateStatus(itemToUpdate, ScheduledItemStatus.DONE)
+        let savedItem = await scheduledItemsService.updateStatus(new ScheduledItemBase(itemToUpdate), status)
         if (!savedItem) return
 
         ScheduledItem.populateBaseFields(savedItem, itemToUpdate)
