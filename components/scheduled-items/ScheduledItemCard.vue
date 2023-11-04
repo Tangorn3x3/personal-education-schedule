@@ -2,6 +2,7 @@
 import appConfig from "@/appConfig";
 import ScheduledItem from "@/models/ScheduledItem";
 import _ from "lodash";
+import moment from "moment";
 import {stringHashToArrayIndex} from "@/utils/utils/stringUtils";
 
 export default {
@@ -15,6 +16,8 @@ export default {
     allowActions: { type: Boolean, default: false },
     title: { type: String, default: 'Поехали! 🚀' },
     elevation: { type: Number, default: 24 },
+
+    completingInProgress: { type: Boolean, default: false },
   },
   data: () => ({
     chipColors: ['red', 'blue', 'green', 'yellow', 'purple']
@@ -49,6 +52,19 @@ export default {
       return this.chipColors[stringHashToArrayIndex(this.group.name, this.chipColors.length)]
     },
 
+    durationText() {
+      const duration = this.item.lesson_duration
+      const integerPart = Math.floor(duration)
+      const decimalPart = duration % 1
+
+      let humanStrings = []
+      if (integerPart === 1) humanStrings.push('1')
+      if (integerPart) humanStrings.push(moment.duration(integerPart, 'hours').humanize())
+      if (decimalPart) humanStrings.push(moment.duration(decimalPart, 'hours').humanize())
+
+      return humanStrings.join(' ')
+    },
+
     progressPercent() {
       if (!this.statistics || this.statistics.length === 0) return 0
       let currentCourseStat = _.find(this.statistics, {course: this.item.course})
@@ -57,8 +73,14 @@ export default {
     },
     progressLabel() {
       if (this.progressPercent === -1) return '∞'
-      return `${this.progressPercent}%`
-    }
+      let percent = this.progressPercent * 100
+      return `${Math.round(percent)}%`
+    },
+  },
+  methods: {
+    moveToComplete() {
+      this.$emit('complete', this.item)
+    },
   }
 }
 </script>
@@ -80,22 +102,25 @@ export default {
       <v-card :elevation="elevation/4*4">
         <v-card-title class="font-weight-light pb-0">{{title}}</v-card-title>
 
-        <VCardText class="pb-2">
+        <VCardText :class="{ 'pb-2' : !dense }">
           <v-list-item v-if="!dense" three-line class="pa-0">
 
-            <v-list-item-content>
-              <div class="text-overline">Приоритет</div>
-              <v-rating disabled hover length="5" size="20" :value="course.priority / 2" ></v-rating>
+            <v-list-item-content :class="{ 'pb-0' : !dense }">
+              <h4 class="font-weight-light mb-2">ПРОДОЛЖИТЕЛЬНОСТЬ</h4>
+              <h3 class="pl-2 mb-4">{{durationText}}</h3>
+
+              <h4 class="font-weight-light">ПРИОРИТЕТ</h4>
+              <v-rating disabled hover length="5" size="15" :value="course.priority / 2" class="scheduled-rating"></v-rating>
             </v-list-item-content>
 
             <v-progress-circular v-if="progressPercent" :value="progressPercent" :rotate="360" :size="75" :width="15"  :color="chipColor">
-              <span style="font-size: 24px;">{{ progressLabel }}</span>
+              <span style="font-size: 18px;">{{ progressLabel }}</span>
             </v-progress-circular>
           </v-list-item>
         </VCardText>
 
         <v-card-actions v-if="allowActions">
-          <VBtn block size="normal" color="primary">Готово</VBtn>
+          <VBtn :loading="completingInProgress" @click="moveToComplete" block size="normal" color="primary">Готово</VBtn>
         </v-card-actions>
       </v-card>
     </VCardText>
@@ -130,5 +155,10 @@ export default {
   top: 10px;
   left: 10px;
   z-index: 2;
+}
+
+.scheduled-rating.v-rating .mdi-star {
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 </style>

@@ -12,15 +12,17 @@ export function getStartOfWeekFormatted() {
 }
 
 export function getStartOfNextWeekFormatted() {
-    const now = new Date();
-    const currentDay = now.getDay();
-    const diff = currentDay === 0 ? 7 : 7 - currentDay;
-    const startOfNextWeek = new Date(now.setDate(now.getDate() + diff));
+    const today = new Date();
+    let daysUntilMonday = 1 - today.getDay(); // Вычисляем дни до следующего понедельника, учитывая воскресенье
+    if (daysUntilMonday <= 0) {
+        daysUntilMonday += 7; // Если сегодня воскресенье, добавляем 7 дней
+    }
+    const nextWeekStartDate = new Date(today);
+    nextWeekStartDate.setDate(today.getDate() + daysUntilMonday);
 
-    const year = startOfNextWeek.getFullYear();
-    const month = (startOfNextWeek.getMonth() + 1).toString().padStart(2, '0');
-    const day = startOfNextWeek.getDate().toString().padStart(2, '0');
-
+    const year = nextWeekStartDate.getFullYear();
+    const month = String(nextWeekStartDate.getMonth() + 1).padStart(2, '0');
+    const day = String(nextWeekStartDate.getDate()).padStart(2, '0');
     return `${year}${month}${day}`;
 }
 

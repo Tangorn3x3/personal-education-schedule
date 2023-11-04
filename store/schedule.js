@@ -2,7 +2,8 @@ import {commonMutations} from "@/@app-platform/utils/storeUtils";
 import * as _ from "lodash";
 import * as scheduledItemsService from "@/utils/service/scheduledItemsService";
 import moment from "moment";
-import {ScheduledItemStatus} from "@/models/ScheduledItem";
+import {populateBaseFields, ScheduledItemStatus} from "@/models/ScheduledItem";
+import * as ScheduledItem from "@/models/ScheduledItem";
 import {filterArrayByDateField} from "@/utils/utils/dateUtils";
 
 export const state = () => ({
@@ -64,11 +65,20 @@ export const actions = {
      * @param {ScheduledItem} item
      * @returns {Promise<void>}
      */
-    async markAsDone({commit, rootState}, item) {
-        let savedItem = await scheduledItemsService.updateStatus(item, ScheduledItemStatus.DONE)
+    async moveViewItemToComplete({commit, rootState}, item) {
+        let initialDate = item.date
+        let savingDate = moment(initialDate).format('YYYY-MM-DD')
+
+        let itemToUpdate = _.cloneDeep(item)
+        itemToUpdate.date = savingDate
+
+        /** @type {ScheduledItem} */
+        let savedItem = await scheduledItemsService.updateStatus(itemToUpdate, ScheduledItemStatus.DONE)
         if (!savedItem) return
 
-        commit('updateInArrayById', { currentWeek: savedItem })
+        ScheduledItem.populateBaseFields(savedItem, itemToUpdate)
+
+        commit('updateInArrayById', { viewItems: itemToUpdate })
     }
 }
 

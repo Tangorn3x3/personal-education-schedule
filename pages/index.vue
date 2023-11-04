@@ -4,7 +4,10 @@
 
       <v-col cols="12" md="4" class="mb-4">
         <h2 class="font-weight-light mb-2">Прямо сейчас</h2>
-        <scheduled-item-card v-if="currentItem" :item="currentItem" :statistics="statistics" allow-actions/>
+        <scheduled-item-card v-if="currentItem"
+                             :item="currentItem" :statistics="statistics" :completing-in-progress="competingInProgress"
+                             @complete="onMoveToComplete"
+                             allow-actions/>
         <card-loading-skeleton v-if="loadingItems" class="elevation-24"/>
       </v-col>
 
@@ -40,7 +43,8 @@ export default {
       triangleBg: triangleDark,
       trophy: trophy,
 
-      loadingItems: false
+      loadingItems: false,
+      competingInProgress: false,
     }
   },
   computed: {
@@ -65,6 +69,7 @@ export default {
       fetchNextWeekItems: 'fetchNextWeekItems',
       fetchViewItems: 'fetchViewItems',
       fetchStatistics: 'fetchStatistics',
+      moveToComplete: 'moveViewItemToComplete',
     }),
     ...mapActions('courses', {fetchCourses: 'fetchItems', fetchCourseGroups: 'fetchGroups'}),
 
@@ -81,6 +86,14 @@ export default {
     async initializeItems() {
       await this.fetchViewItems()
       this.fetchStatistics()
+    },
+
+    async onMoveToComplete(viewItem) {
+      this.competingInProgress = true
+
+      await this.moveToComplete(viewItem)
+
+      this.competingInProgress = false
     }
   }
 }

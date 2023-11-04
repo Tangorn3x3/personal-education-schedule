@@ -5,9 +5,9 @@ import {PlatformCrudTableDesc} from "@/@app-platform/services/platformCrudServic
 export const PlatformCrudTables = Object.freeze({
     coursesGroups: new PlatformCrudTableDesc({ code: 'coursesGroups', table: 'dict_course_groups', name: 'Группы курсов', cacheable: true}),
     courses: new PlatformCrudTableDesc({ code: 'courses', table: 'dict_courses', name: 'Курсы', cacheable: true}),
-    schedules: new PlatformCrudTableDesc({ code: 'schedules', table: 'data_schedule', name: 'Расписание', cacheable: false }),
 
-    schedulesView: new PlatformCrudTableDesc({ code: 'schedulesView', table: 'view_schedule', name: 'Расписание', cacheable: true }),
+    schedules: new PlatformCrudTableDesc({ code: 'schedules', table: 'data_schedule', name: 'Расписание', cacheable: false }),
+    schedulesView: new PlatformCrudTableDesc({ code: 'schedulesView', table: 'view_schedule', name: 'Расписание', cacheable: false }),
     schedulesStatistics: new PlatformCrudTableDesc({ code: 'schedulesStatistics', table: 'view_schedule_course_statistics', name: 'Расписание. Статистика', cacheable: false }),
 });
 
@@ -17,6 +17,7 @@ export default {
     platformApiUrl: nuxtConfig.platformApiUrl,
     platformCrud: {
         cacheEnabled: true,
+        cachePrefix: 'personal-schedule__',
     },
 
     courses: {

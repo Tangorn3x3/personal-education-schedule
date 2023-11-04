@@ -2,9 +2,11 @@ import {getStartOfWeekFormatted, getStartOfNextWeekFormatted} from "@/utils/util
 import * as crudService from "@/@app-platform/services/platformCrudService";
 import {PlatformCrudTables} from "@/appConfig";
 import notificationService from "@/utils/service/notificationService";
+import ScheduledItem from "@/models/ScheduledItem";
+import _ from "lodash";
 
 export async function fetchViewItemsForCoupleWeeks() {
-    let weeks = [getStartOfWeekFormatted(), getStartOfNextWeekFormatted()]
+    let weeks = [getStartOfWeekFormatted(), getStartOfNextWeekFormatted(), _.toNumber(getStartOfWeekFormatted()), _.toNumber(getStartOfNextWeekFormatted())]
     return await crudService.list(PlatformCrudTables.schedulesView, { week: weeks })
 }
 
@@ -36,5 +38,11 @@ export async function updateStatus(currentItem, newStatus) {
 
     currentItem.status = newStatus
 
-    return await crudService.update(PlatformCrudTables.schedules, id, currentItem)
+    let savedItem = await crudService.update(PlatformCrudTables.schedules, id, currentItem)
+    if (!savedItem || savedItem.status !== newStatus) {
+        notificationService.showErrorAlert('Сохраненный статус не соответствует требуемому', `Обновление статуса`)
+        return null
+    }
+
+    return savedItem
 }

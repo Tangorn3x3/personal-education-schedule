@@ -5,6 +5,8 @@ import appConfig, {PlatformCrudTables} from "@/appConfig";
 
 const USE_CACHE = process.env.NODE_ENV === 'production'
 
+const DEFAULT_CACHE_KEY_PREFIX = 'platform_crud__'
+
 const ACTIONS = {
     list: 'generic_items_all',
     create: 'generic_items_add',
@@ -20,7 +22,7 @@ const ACTIONS = {
 export async function list(apiType, filter = {}) {
     try {
         console.debug(`Загрузка списка ${apiType.name} из таблицы ${apiType.table}...`)
-        let cacheKey = `${apiType.code}`
+        let cacheKey = prepareCacheKey(`${apiType.code}`)
 
         if (apiType.cacheable) {
             let cached = _getCache(cacheKey)
@@ -204,4 +206,9 @@ function _getCache(key) {
     } catch (e) {
         return undefined
     }
+}
+
+function prepareCacheKey(key) {
+    const prefix = appConfig.platformCrud.cachePrefix || DEFAULT_CACHE_KEY_PREFIX
+    return prefix + key
 }

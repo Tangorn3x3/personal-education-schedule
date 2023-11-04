@@ -18,6 +18,7 @@ class ScheduledItem {
         /** @type {String} */ this.date = _.get(props, 'date') || null
         /** @type {String} */ this.status = _.get(props, 'status') || null
         /** @type {String} */ this.updatedAt = _.get(props, 'updatedAt') || null
+        /** @type {Number} */ this.lesson_duration = _.get(props, 'lesson_duration') || 1
 
 
         /*View only fields*/
@@ -27,6 +28,18 @@ class ScheduledItem {
         /** @type {String} */ this.group = _.get(props, 'group') || null
         /** @type {String} */ this.group_image = _.get(props, 'group_image') || null
     }
+}
+
+/**
+ * @param {ScheduledItem} source
+ * @param {ScheduledItem} target
+ */
+export function populateBaseFields (source, target) {
+    target.course = source.course
+    target.week = source.week
+    target.date = source.date
+    target.status = source.status
+    target.updatedAt = source.updatedAt
 }
 
 export default ScheduledItem
