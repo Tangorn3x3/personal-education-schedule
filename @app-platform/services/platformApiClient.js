@@ -76,7 +76,6 @@ export async function fetchAction(action, options = {}) {
 }
 
 export function getToken() {
-    console.log('FROM Client', app.$auth, platformUrl)
     let currentStrategy = app.$auth.$storage.state.strategy
     return app.$auth.$storage._state[`_token.${currentStrategy}`]
 }

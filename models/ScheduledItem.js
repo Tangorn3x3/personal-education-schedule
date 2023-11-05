@@ -65,4 +65,11 @@ export class ScheduledItemBase {
     }
 }
 
+export class SchedulePlanningRequest {
+    constructor (startDate, daysNumber) {
+        /** @type {String} */ this.start_date = startDate
+        /** @type {Number} */ this.days_number = daysNumber
+    }
+}
+
 export default ScheduledItem

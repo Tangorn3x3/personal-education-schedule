@@ -2,9 +2,11 @@ import {commonMutations} from "@/@app-platform/utils/storeUtils";
 import * as _ from "lodash";
 import * as scheduledItemsService from "@/utils/service/scheduledItemsService";
 import moment from "moment";
-import {populateBaseFields, ScheduledItemBase, ScheduledItemStatus} from "@/models/ScheduledItem";
+import {ScheduledItemBase, ScheduledItemStatus} from "@/models/ScheduledItem";
 import * as ScheduledItem from "@/models/ScheduledItem";
 import {filterArrayByDateField} from "@/utils/utils/dateUtils";
+import notificationService from "@/utils/service/notificationService";
+import {fetchScheduleStatistics} from "@/utils/service/scheduledItemsService";
 
 export const state = () => ({
     /** @type {ScheduledItem[]}*/
@@ -80,6 +82,24 @@ export const actions = {
         ScheduledItem.populateBaseFields(savedItem, itemToUpdate)
 
         commit('updateInArrayById', { viewItems: itemToUpdate })
+    },
+
+
+    async planSchedule({commit, rootState, dispatch}, planningRequest) {
+        try {
+            let items = await scheduledItemsService.planSchedule(planningRequest)
+
+            if (!items || !_.isArray(items) || items.length === 1)
+                throw new Error('Элементы в созданном расписании отсутствуют')
+
+            await dispatch('fetchViewItems')
+            dispatch('fetchStatistics')
+            return items
+        } catch (error) {
+            console.log()
+            notificationService.showErrorAlert(error.toString(), `Создание расписания`)
+            return []
+        }
     }
 }
 

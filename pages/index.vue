@@ -2,10 +2,9 @@
   <v-container>
     <v-row>
 
-      <v-col cols="12" md="4" class="mb-4">
+      <v-col v-if="currentItem" cols="12" md="4" class="mb-4">
         <h2 class="font-weight-light mb-2">Прямо сейчас</h2>
-        <scheduled-item-card v-if="currentItem"
-                             :item="currentItem" :statistics="statistics" :description="currentItem.health_description"
+        <scheduled-item-card :item="currentItem" :statistics="statistics" :description="currentItem.health_description"
                              :completing-in-progress="competingInProgress" :skipping-in-progress="skippingInProgress"
                              @complete="onMoveToComplete"
                              @skip="onMoveToSkip"
@@ -15,11 +14,17 @@
 
       <v-col cols="12" md="4" class="mb-4">
         <h2 class="font-weight-light mb-2">Сегодня</h2>
-        <scheduled-item-card v-for="item in todayToWork" :key="item.id" :item="item" :title="item.course" :elevation="8" dense class="mb-6"/>
+
+        <template v-if="todayToWork && todayToWork.length > 0">
+          <scheduled-item-card  v-for="item in todayToWork" :key="item.id" :item="item" :title="item.course" :elevation="8" dense class="mb-6"/>
+        </template>
+        <text-placeholder v-else title="Сегодня нет занятий" subtitle="Пора отдыхать" small/>
+
         <card-loading-skeleton v-if="loadingItems" class="elevation-24"/>
       </v-col>
 
-      <v-col cols="12" md="4" class="mb-4">
+
+      <v-col v-if="tomorrowItems && tomorrowItems.length > 0" cols="12" md="4" class="mb-4">
         <h2 class="font-weight-light mb-2">Завтра</h2>
         <scheduled-item-card v-for="item in tomorrowItems" :key="item.id" :item="item" :title="item.course" :elevation="12" dense  class="mb-6"/>
         <card-loading-skeleton v-if="loadingItems" class="elevation-24"/>
@@ -37,9 +42,10 @@ import {ScheduledItemStatus} from "@/models/ScheduledItem";
 import CardLoadingSkeleton from "@/components/common/loaders/CardLoadingSkeleton.vue";
 import ScheduledItemCard from "@/components/scheduled-items/ScheduledItemCard.vue";
 import _ from "lodash";
+import TextPlaceholder from "@/components/common/placeholders/TextPlaceholder.vue";
 
 export default {
-  components: {ScheduledItemCard, CardLoadingSkeleton},
+  components: {TextPlaceholder, ScheduledItemCard, CardLoadingSkeleton},
   data() {
     return {
       triangleBg: triangleDark,

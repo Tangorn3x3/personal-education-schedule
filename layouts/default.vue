@@ -2,6 +2,10 @@
   <v-app dark>
     <v-navigation-drawer v-model="drawer" clipped app>
       <v-list>
+        <v-list-item>
+          <schedule-planning-form/>
+        </v-list-item>
+
         <v-list-item v-if="can(item.permission)"
                      v-for="(item, i) in items" :key="i" :to="item.to" router exact>
 
@@ -44,8 +48,9 @@
   import GlobalLoader from "@/components/common/GlobalLoader";
   import appConfig, {PlatformCrudTables} from "@/appConfig";
   import {clearCaches} from "@/@app-platform/services/platformCrudService";
+  import SchedulePlanningForm from "@/components/scheduled-items/SchedulePlanningForm.vue";
   export default {
-    components: {GlobalLoader},
+    components: {SchedulePlanningForm, GlobalLoader},
     data() {
       return {
         drawer: false,

@@ -5,6 +5,7 @@ import notificationService from "@/utils/service/notificationService";
 import ScheduledItem from "@/models/ScheduledItem";
 import _ from "lodash";
 import moment from "moment";
+import {fetchAction} from "@/@app-platform/services/platformApiClient";
 
 export async function fetchViewItemsForCoupleWeeks() {
     let weeks = [getStartOfWeekFormatted(), getStartOfNextWeekFormatted(), _.toNumber(getStartOfWeekFormatted()), _.toNumber(getStartOfNextWeekFormatted())]
@@ -56,4 +57,15 @@ export async function updateStatus(currentItem, newStatus) {
     }
 
     return savedItem
+}
+
+/**
+ *
+ * @param {SchedulePlanningRequest} planningRequest
+ * @returns {Promise<ScheduledItem[]>}
+ */
+export async function planSchedule(planningRequest) {
+    return await fetchAction('scheduled_items_plan', {
+        body: planningRequest
+    })
 }
