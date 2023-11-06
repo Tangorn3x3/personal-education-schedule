@@ -3,8 +3,8 @@ import ru from 'vuetify/es5/locale/ru'
 import packageJson from './package.json'
 
 const SRV_ADDR = 'https://script.google.com/macros/s/AKfycbyUkT2j2JhjNPfzPE_Y2-54AmVLB3b_hD95u2Kk98G9I2ecaGbkFcvEgL2VNcQl1-ts/exec'
-const SRV_MAIN_PATH = '/snippet/'
-export const SRV_PATH = '/'
+const SRV_MAIN_PATH = '/personal-education-schedule/'
+export const SRV_PATH = '/personal-education-schedule/'
 
 export const APP_NAME = packageJson.name
 
