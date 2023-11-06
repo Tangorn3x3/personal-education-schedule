@@ -9,18 +9,20 @@
                              @complete="onMoveToComplete"
                              @skip="onMoveToSkip"
                              allow-actions skippable/>
-        <card-loading-skeleton v-if="loadingItems" class="elevation-24"/>
       </v-col>
 
       <v-col cols="12" md="4" class="mb-4">
         <h2 class="font-weight-light mb-2">Сегодня</h2>
 
-        <template v-if="todayToWork && todayToWork.length > 0">
+        <template v-if="isTodayPresents">
           <scheduled-item-card  v-for="item in todayToWork" :key="item.id" :item="item" :title="item.course" :elevation="8" dense class="mb-6"/>
         </template>
-        <text-placeholder v-else title="Сегодня нет занятий" subtitle="Пора отдыхать" small/>
 
-        <card-loading-skeleton v-if="loadingItems" class="elevation-24"/>
+        <text-placeholder v-if="!isTodayPresents && !loadingItems" title="Сегодня нет занятий" subtitle="Пора отдыхать" small/>
+
+        <template v-if="loadingItems">
+          <card-loading-skeleton v-for="i in 3" :key="i"  class="elevation-24 mb-6"/>
+        </template>
       </v-col>
 
 
@@ -31,6 +33,9 @@
       </v-col>
 
     </v-row>
+
+    <snackbar-alert/>
+
   </v-container>
 </template>
 
@@ -43,9 +48,10 @@ import CardLoadingSkeleton from "@/components/common/loaders/CardLoadingSkeleton
 import ScheduledItemCard from "@/components/scheduled-items/ScheduledItemCard.vue";
 import _ from "lodash";
 import TextPlaceholder from "@/components/common/placeholders/TextPlaceholder.vue";
+import SnackbarAlert from "@/components/common/alerts/SnackbarAlert.vue";
 
 export default {
-  components: {TextPlaceholder, ScheduledItemCard, CardLoadingSkeleton},
+  components: {SnackbarAlert, TextPlaceholder, ScheduledItemCard, CardLoadingSkeleton},
   data() {
     return {
       triangleBg: triangleDark,
@@ -54,6 +60,9 @@ export default {
       loadingItems: false,
       competingInProgress: false,
       skippingInProgress: false,
+
+      snackbar: false,
+      snackbarText: '',
     }
   },
   computed: {
@@ -63,6 +72,10 @@ export default {
       allItems: 'allItems', todayItems: 'today', tomorrowItems: 'tomorrow', yesterdayItems: 'yesterday',
       currentItem: 'currentItem'
     }),
+
+    isTodayPresents() {
+      return this.todayToWork && this.todayToWork.length > 0
+    },
 
     todayToWork() {
       let currentId = this.currentItem ? this.currentItem.id : null
@@ -81,6 +94,7 @@ export default {
       moveViewItemToStatus: 'moveViewItemToStatus',
     }),
     ...mapActions('courses', {fetchCourses: 'fetchItems', fetchCourseGroups: 'fetchGroups'}),
+    ...mapActions('utils', { showSnackbar: 'showSnackbar' }),
 
     async initializeData() {
       this.loadingItems = true
@@ -103,6 +117,7 @@ export default {
       await this.moveViewItemToStatus({ item: viewItem, status: ScheduledItemStatus.DONE })
 
       this.competingInProgress = false
+      this.showSnackbar('Занятие завершено')
     },
 
     async onMoveToSkip(viewItem) {
@@ -111,7 +126,8 @@ export default {
       await this.moveViewItemToStatus({ item: viewItem, status: ScheduledItemStatus.SKIP })
 
       this.skippingInProgress = false
-    }
+      this.showSnackbar('Занятие пропущено')
+    },
   }
 }
 </script>

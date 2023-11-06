@@ -5,10 +5,11 @@ import {SchedulePlanningRequest} from "@/models/ScheduledItem";
 import moment from "moment";
 import VDatePickerComponent from "@/components/common/inputs/VDatePickerComponent.vue";
 import notificationService from "@/utils/service/notificationService";
+import SnackbarAlert from "@/components/common/alerts/SnackbarAlert.vue";
 
 export default {
   name: "SchedulePlanningForm",
-  components: {VDatePickerComponent},
+  components: {SnackbarAlert, VDatePickerComponent},
   mixins: [],
   props: {
     header: { type: Boolean, default: false },
@@ -31,6 +32,7 @@ export default {
 
   methods: {
     ...mapActions('schedule', { initSchedulePlanning: 'planSchedule' }),
+    ...mapActions('utils', { showSnackbar: 'showSnackbar' }),
     async planSchedule() {
       this.$v.$touch()
       if (this.$v.$invalid) return
@@ -44,7 +46,8 @@ export default {
 
       this.planLoading = false
 
-      notificationService.showSuccessAlert('Расписание создано')
+      this.showSnackbar('Расписание успешно создано')
+      notificationService.showNativeNotification('Расписание успешно создано')
     }
   }
 }
@@ -61,6 +64,8 @@ export default {
                 label="Дней в расписании" outlined dense/>
 
       <v-btn :disabled="$v.$invalid" :loading="planLoading" @click="planSchedule" color="primary" block>Начать</v-btn>
+
+    <snackbar-alert/>
   </v-form>
 </template>
 
