@@ -24,20 +24,26 @@ export const getters = {
     allItems (state, getters) {
         return _.union(state.currentWeek, state.nextWeek, state.viewItems)
     },
+    lastInDate: (state, getters, rootState) => (date) => {
+        let itemsInDate = getters.allItems.filter(item => item.date === date)
+        if (!itemsInDate || itemsInDate.length === 0) return null
+
+        return _.maxBy(itemsInDate, 'position')
+    },
 
     today (state, getters) {
         let items = filterArrayByDateField(getters.allItems, 'date', new Date())
-        return _.orderBy(items, ['date'], ['asc'])
+        return _.orderBy(items, ['position'], ['asc'])
     },
     tomorrow (state, getters) {
         let filterDate = moment().add(1, 'day').toDate()
         let items = filterArrayByDateField(getters.allItems, 'date', filterDate)
-        return _.orderBy(items, ['date'], ['asc'])
+        return _.orderBy(items, ['position'], ['asc'])
     },
     yesterday (state, getters) {
         let filterDate = moment().subtract(1, 'day').toDate()
         let items = filterArrayByDateField(getters.allItems, 'date', filterDate)
-        return _.orderBy(items, ['date'], ['asc'])
+        return _.orderBy(items, ['position'], ['asc'])
     },
 
     currentItem (state, getters) {
@@ -77,6 +83,31 @@ export const actions = {
 
         /** @type {ScheduledItem} */
         let savedItem = await scheduledItemsService.updateStatus(new ScheduledItemBase(itemToUpdate), status)
+        if (!savedItem) return
+
+        ScheduledItem.populateBaseFields(savedItem, itemToUpdate)
+
+        commit('updateInArrayById', { viewItems: itemToUpdate })
+    },
+
+
+    /**
+     * @param {ScheduledItem} item
+     * @returns {Promise<void>}
+     */
+    async updateViewItemState({commit, rootState}, { item, newState }) {
+        let initialDate = item.date
+        let savingDate = moment(initialDate).format('YYYY-MM-DD')
+
+        let itemToUpdate = _.cloneDeep(item)
+        itemToUpdate.date = savingDate
+
+        _.forIn(newState, (value, key) => {
+          itemToUpdate[key] = value
+        })
+
+        /** @type {ScheduledItem} */
+        let savedItem = await scheduledItemsService.updateItem(new ScheduledItemBase(itemToUpdate))
         if (!savedItem) return
 
         ScheduledItem.populateBaseFields(savedItem, itemToUpdate)

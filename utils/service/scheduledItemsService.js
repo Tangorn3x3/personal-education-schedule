@@ -60,6 +60,28 @@ export async function updateStatus(currentItem, newStatus) {
 }
 
 /**
+ * @param {ScheduledItemBase} currentItem
+ * @returns {Promise<Object>}
+ */
+export async function updateItem(currentItem) {
+    let id = currentItem.id
+    if (!id) {
+        notificationService.showErrorAlert('Не удалось определить идентификатор записи', `Обновление записи`)
+        return null
+    }
+
+    currentItem.updatedAt = moment().format('YYYY-MM-DD HH:mm:ss')
+
+    let savedItem = await crudService.update(PlatformCrudTables.schedules, id, currentItem)
+    if (!savedItem || !savedItem.id) {
+        notificationService.showErrorAlert('Неверное состояние сохраненной записи', `Обновление записи`)
+        return null
+    }
+
+    return savedItem
+}
+
+/**
  *
  * @param {SchedulePlanningRequest} planningRequest
  * @returns {Promise<ScheduledItem[]>}

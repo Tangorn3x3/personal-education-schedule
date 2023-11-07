@@ -32,7 +32,6 @@ export default {
 
   methods: {
     ...mapActions('schedule', { initSchedulePlanning: 'planSchedule' }),
-    ...mapActions('utils', { showSnackbar: 'showSnackbar' }),
     async planSchedule() {
       this.$v.$touch()
       if (this.$v.$invalid) return
@@ -65,7 +64,6 @@ export default {
 
       <v-btn :disabled="$v.$invalid" :loading="planLoading" @click="planSchedule" color="primary" block>Начать</v-btn>
 
-    <snackbar-alert/>
   </v-form>
 </template>
 

@@ -20,6 +20,7 @@ class ScheduledItem {
         /** @type {String} */ this.status = _.get(props, 'status') || null
         /** @type {String} */ this.updatedAt = _.get(props, 'updatedAt') || null
         /** @type {Number} */ this.lesson_duration = _.get(props, 'lesson_duration') || 1
+        /** @type {Number} */ this.position = _.get(props, 'position') || 1
 
 
         /*View only fields*/
@@ -42,6 +43,7 @@ export function populateBaseFields (source, target) {
     target.date = source.date
     target.status = source.status
     target.updatedAt = source.updatedAt
+    target.position = source.position
 }
 
 
@@ -57,6 +59,7 @@ export class ScheduledItemBase {
         /** @type {String} */ this.date = _.get(props, 'date') || null
         /** @type {String} */ this.status = _.get(props, 'status') || null
         /** @type {String} */ this.updatedAt = _.get(props, 'updatedAt') || null
+        /** @type {Number} */ this.position = _.get(props, 'position') || 1
 
 
         let duration = _.get(props, 'lesson_duration') || 1

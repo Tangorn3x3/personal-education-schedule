@@ -2,32 +2,32 @@ importScripts('/personal-education-schedule/_nuxt/workbox.4c4f5ca6.js')
 
 workbox.precaching.precacheAndRoute([
   {
-    "url": "/personal-education-schedule/_nuxt/445da6d.js",
-    "revision": "a4ffe02f15fb37770db1d07d1ce1488d"
+    "url": "/personal-education-schedule/_nuxt/4778869.js",
+    "revision": "4bcfe54bcebabb1d1fd8041a95b1508a"
   },
   {
-    "url": "/personal-education-schedule/_nuxt/617c06e.js",
-    "revision": "ff061a2a2b06bc1788dc12c4e0877e90"
+    "url": "/personal-education-schedule/_nuxt/49aadae.js",
+    "revision": "e8c241547afa7e02f527674b4f5aa0f4"
   },
   {
-    "url": "/personal-education-schedule/_nuxt/867b66a.js",
-    "revision": "64f1ba81c909d0c39ce9812de1f722d8"
+    "url": "/personal-education-schedule/_nuxt/61f0b91.js",
+    "revision": "751db414c837207c871b81b592fe8af5"
   },
   {
-    "url": "/personal-education-schedule/_nuxt/8f081cb.js",
-    "revision": "e7af009b36dd0680ec099405b287a85c"
+    "url": "/personal-education-schedule/_nuxt/7096f2b.js",
+    "revision": "0f9cd1e5d975f0ae06a5f305c13d8662"
   },
   {
-    "url": "/personal-education-schedule/_nuxt/9ff43cf.js",
-    "revision": "b4713d8d0a40d270b6508adc92575542"
+    "url": "/personal-education-schedule/_nuxt/b41da4b.js",
+    "revision": "ff3a33309447e2c2a8a3fb0c3b360532"
   },
   {
-    "url": "/personal-education-schedule/_nuxt/ba552e2.js",
-    "revision": "ecac5fea9a2b9c5f5d11c8c5b6bd9b35"
+    "url": "/personal-education-schedule/_nuxt/db255fa.js",
+    "revision": "3577fb55436e33cb69fe2454c8933cab"
   },
   {
-    "url": "/personal-education-schedule/_nuxt/c013d8b.js",
-    "revision": "30da049f46407f3775156a61fbcebcf1"
+    "url": "/personal-education-schedule/_nuxt/fbff90a.js",
+    "revision": "26d2d90c7e700a6d13ab8cd702e2e5d8"
   }
 ], {
   "cacheId": "Course Scheduler",

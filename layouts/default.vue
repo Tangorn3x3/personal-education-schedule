@@ -36,6 +36,8 @@
     <v-content>
       <v-container>
         <nuxt/>
+
+        <snackbar-alert/>
       </v-container>
     </v-content>
 
@@ -49,8 +51,9 @@
   import appConfig, {PlatformCrudTables} from "@/appConfig";
   import {clearCaches} from "@/@app-platform/services/platformCrudService";
   import SchedulePlanningForm from "@/components/scheduled-items/SchedulePlanningForm.vue";
+  import SnackbarAlert from "@/components/common/alerts/SnackbarAlert.vue";
   export default {
-    components: {SchedulePlanningForm, GlobalLoader},
+    components: {SnackbarAlert, SchedulePlanningForm, GlobalLoader},
     data() {
       return {
         drawer: false,

@@ -4,9 +4,11 @@ import ScheduledItem from "@/models/ScheduledItem";
 import _ from "lodash";
 import moment from "moment";
 import {stringHashToArrayIndex} from "@/utils/utils/stringUtils";
+import ScheduleItemRePlanner from "@/components/scheduled-items/ScheduleItemRePlanner.vue";
 
 export default {
   name: "ScheduledItemCard",
+  components: {ScheduleItemRePlanner},
   props: {
     item: {type: Object | ScheduledItem, required: true},
 
@@ -86,19 +88,7 @@ export default {
   methods: {
     moveToComplete() {
       this.$emit('complete', this.item)
-    },
-    async moveToSkip() {
-      const res = await this.$dialog.confirm({
-        text: 'Пропустить занятие?',
-        actions: {
-          'true': 'Пропустить',
-          'false': 'Отмена',
-        }
-      })
-      if (!res) return
-
-      this.$emit('skip', this.item)
-    },
+    }
   }
 }
 </script>
@@ -121,9 +111,11 @@ export default {
         <v-card-title class="font-weight-light pb-0">
           <span>{{title}}</span>
 
-          <VBtn v-if="skippable" :loading="skippingInProgress" @click="moveToSkip" icon color="pink" size="normal" style="position: absolute; right: 0;">
+          <schedule-item-re-planner v-if="skippable" :view-item="item"/>
+
+<!--          <VBtn v-if="skippable" :loading="skippingInProgress" @click="moveToSkip" icon color="pink" size="normal" style="position: absolute; right: 0;">
               <v-icon>mdi-skip-next</v-icon>
-          </VBtn>
+          </VBtn>-->
         </v-card-title>
 
         <VCardText :class="{ 'pb-2' : !dense }">
