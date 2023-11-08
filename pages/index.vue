@@ -15,7 +15,9 @@
 
         <template v-if="isTodayPresents">
           <scheduled-item-card  v-for="item in todayToWork" :key="item.id" :item="item" :title="item.course" :elevation="8"
-                                skippable dense class="mb-6"/>
+                                :description="item.health_description"
+                                @complete="onMoveToComplete" :completing-in-progress="competingInProgress"
+                                allow-actions skippable dense class="mb-6"/>
         </template>
 
         <text-placeholder v-if="!isTodayPresents && !loadingItems" title="Сегодня нет занятий" subtitle="Пора отдыхать" small/>
@@ -28,8 +30,10 @@
 
       <v-col v-if="tomorrowItems && tomorrowItems.length > 0" cols="12" md="4" class="mb-4">
         <h2 class="font-weight-light mb-2">Завтра</h2>
-        <scheduled-item-card v-for="item in tomorrowItems" :key="item.id" :item="item" :title="item.course" :elevation="12"
-                             skippable dense  class="mb-6"/>
+        <scheduled-item-card v-for="item in tomorrowItems" :key="item.id" :item="item" :title="item.course" :elevation="8"
+                             :description="item.health_description"
+                             @complete="onMoveToComplete" :completing-in-progress="competingInProgress"
+                             allow-actions skippable dense  class="mb-6"/>
         <card-loading-skeleton v-if="loadingItems" class="elevation-24"/>
       </v-col>
 
